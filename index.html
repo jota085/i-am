@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistente Automático</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; padding: 0; }
+    .container { max-width: 600px; margin: auto; }
+    .chat { border: 1px solid #ccc; padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+    .input-container { display: flex; }
+    .input-container input { flex: 1; padding: 10px; }
+    .input-container button { padding: 10px 20px; background-color: #007BFF; color: #fff; border: none; cursor: pointer; }
+    .input-container button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Assistente Automático</h1>
+    <div id="chat" class="chat"></div>
+    <div class="input-container">
+      <input type="text" id="userInput" placeholder="Digite sua resposta aqui...">
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+
+    // Base de perguntas e respostas
+    const flow = [
+      { question: "Como posso ajudar?", key: "feeling" },
+      { question: "Luz de temperatura acesa?", key: "name" },
+      { question: "Verficar nivel do liquido de arrefecimento. Nivel esta abaixo do adequado?", key: "likesTech" },
+      { question: "Complete o nivel do fluido corretamente e pressorize o sistema de arrefecimento. Houve vazamento?", key: "likesTech" },
+      { question: "Repare ou substitua a peça danificada. Problema resolvido?", key: "likesTech" },
+    ];
+
+    let currentStep = 0;
+
+    const userResponses = {};
+
+    // Exibe a primeira pergunta ao carregar a página
+    window.onload = () => displayMessage(flow[currentStep].question);
+
+    function displayMessage(message, sender = "bot") {
+      const messageElement = document.createElement("div");
+      messageElement.textContent = message;
+      messageElement.style.textAlign = sender === "bot" ? "left" : "right";
+      chat.appendChild(messageElement);
+    }
+
+    function sendMessage() {
+      const userResponse = userInput.value.trim();
+      if (!userResponse) return;
+
+      // Exibe a resposta do usuário
+      displayMessage(userResponse, "user");
+
+      // Salva a resposta
+      const currentKey = flow[currentStep].key;
+      userResponses[currentKey] = userResponse;
+
+      // Vai para a próxima pergunta
+      currentStep++;
+      userInput.value = "";
+
+      // Checa se há mais perguntas
+      if (currentStep < flow.length) {
+        displayMessage(flow[currentStep].question);
+      } else {
+        displayMessage("Obrigado por responder! :)");
+        console.log("Respostas do usuário:", userResponses); // Para debug
+      }
+    }
+  </script>
+</body>
+</html>
